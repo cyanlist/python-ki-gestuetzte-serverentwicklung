@@ -1,0 +1,41 @@
+{
+  // Hide files that are not relevant for working on the project in the explorer
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.py[cod]": true,
+    "**/*.egg-info": true,
+    "**/.venv": true,
+    "**/.ruff_cache": true,
+    "**/.pytest_cache": true,
+    "**/.coverage": true,
+    "**/htmlcov": true,
+    "**/.git": true,
+    "**/uv.lock": true
+  },
+
+  // Keep generated files and dependencies out of the search results
+  "search.exclude": {
+    "**/.venv": true,
+    "**/.ruff_cache": true,
+    "**/.pytest_cache": true,
+    "**/htmlcov": true,
+    "**/uv.lock": true
+  },
+
+  // Do not watch folders that change constantly and contain no source code
+  "files.watcherExclude": {
+    "**/.venv/**": true,
+    "**/.ruff_cache/**": true,
+    "**/.pytest_cache/**": true
+  },
+
+  // Use the virtual environment created by "uv sync"
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+
+  // Format on save with ruff. Requires the official VS Code extension https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff.
+  // Uncomment the block below to enable it.
+  // "[python]": {
+  //   "editor.defaultFormatter": "charliermarsh.ruff",
+  //   "editor.formatOnSave": true
+  // }
+}

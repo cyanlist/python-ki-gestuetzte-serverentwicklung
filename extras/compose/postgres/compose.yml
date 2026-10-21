@@ -1,0 +1,25 @@
+# See https://github.com/felipewom/docker-compose-postgres for more detailed explainations
+# Start:    docker compose up -d
+# Reload:   docker compose down -v && docker compose up -d
+# Check:    docker compose exec postgres psql --username=admin --dbname=pokemon
+services:
+  postgres:
+    image: postgres:18
+    container_name: pokemon-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secure-password123
+      POSTGRES_DB: pokemon
+    volumes:
+      - pg_data:/var/lib/postgresql
+      - ./init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "--username=admin", "--dbname=pokemon"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
+volumes:
+  pg_data:

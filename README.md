@@ -25,6 +25,8 @@ built for the course "KI-gestützte Serverentwicklung" at Hochschule Karlsruhe.
 | FastAPI server, SQLAlchemy entities, REST endpoints | planned |
 | Tests for GET and POST | planned |
 
+The detailed list of requirements is in [CHECKLIST.md](CHECKLIST.md).
+
 ## Prerequisites
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (running)

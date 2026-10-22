@@ -1,0 +1,12 @@
+# Configuration of the application. It is read once at startup (see config/config.py).
+# TOML = Tom's Obvious Minimal Language, see https://toml.io
+
+[db]
+host = "localhost"
+port = 5432
+name = "pokemon"
+username = "admin"
+# Password of the LOCAL development database, same value as in
+# extras/compose/postgres/compose.yml. Never use a real password here.
+password = "secure-password123"
+log-statements = false

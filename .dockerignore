@@ -1,0 +1,16 @@
+.venv/
+.git/
+.github/
+.vscode/
+.ruff_cache/
+.pytest_cache/
+__pycache__/
+*.pyc
+docs/
+extras/
+tests/
+CHECKLIST.md
+AGENT.md
+.env
+.env.*
+!.env.example

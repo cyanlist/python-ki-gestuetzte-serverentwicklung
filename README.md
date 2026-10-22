@@ -97,14 +97,14 @@ If port 5432 is already in use, change `"5432:5432"` in `compose.yml` to
 ```text
 pokemon 1 ──── 1 pokemon_detail
    │
-   └────── 1:N  attacke
+   └────── 1:N  move
 ```
 
 | Table | Relation | Content |
 |---|---|---|
 | `pokemon` | main table | Pokédex number (primary key), name, types, height, weight, legendary flag, `version` for optimistic locking |
 | `pokemon_detail` | 1:1 to `pokemon` | catch rate, base experience |
-| `attacke` | 1:N to `pokemon` | name, type, power, accuracy |
+| `move` | 1:N to `pokemon` | name, type, power, accuracy |
 
 The seed data contains a selection of 12 Pokémon of the 5th generation.
 

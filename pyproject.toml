@@ -40,6 +40,11 @@ indent-width = 4
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "N"]
 
+# Explicit, even though these are ruff's own defaults: run with "uv run ruff format"
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
 # Include files for ty checks
 [tool.ty.src]
 include = ["src", "tests"]

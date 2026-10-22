@@ -22,8 +22,8 @@ built for the course "KI-gestützte Serverentwicklung" at Hochschule Karlsruhe.
 |---|---|
 | Project skeleton with uv, ruff, ty and pytest | done |
 | PostgreSQL container with schema and seed data | done |
-| FastAPI server, SQLAlchemy entities, REST endpoints | planned |
-| Tests for GET and POST | planned |
+| FastAPI server, SQLAlchemy entities, REST endpoints | done |
+| Tests for GET, POST and PUT | done |
 
 The detailed list of requirements is in [CHECKLIST.md](CHECKLIST.md).
 
@@ -92,6 +92,26 @@ If port 5432 is already in use, change `"5432:5432"` in `compose.yml` to
 > The credentials in `compose.yml` are for local development only.
 > Do not reuse them anywhere else.
 
+### 4. Start the server
+
+```shell
+uv run pokemon
+```
+
+The server listens on <http://127.0.0.1:8000> and reloads automatically on code
+changes. Swagger UI is at <http://127.0.0.1:8000/docs>.
+
+## Endpoints
+
+| Method | Path | Description | Status codes |
+|---|---|---|---|
+| GET | `/pokemon/{id}` | One Pokémon, supports `If-None-Match` | 200, 304, 404, 422 |
+| GET | `/pokemon` | Search with `name`, `type`, `legendary`, `page`, `size` | 200, 422 |
+| POST | `/pokemon` | Create a Pokémon with its detail and moves | 201, 409, 422 |
+| PUT | `/pokemon/{id}` | Replace a Pokémon, needs `If-Match` | 204, 404, 409, 412, 422, 428 |
+| GET | `/health/live` | Liveness check, no dependencies | 200 |
+| GET | `/health/ready` | Readiness check, includes the database | 200, 503 |
+
 ## Data model
 
 ```text
@@ -133,7 +153,10 @@ Run linter and type checker before every commit.
 │       └── postgres/        # compose.yml and init/ with schema and seed data
 ├── src/
 │   └── pokemon/             # application package
-├── tests/                   # tests (to be added)
+├── tests/
+│   └── integration/
+│       └── rest/            # pytest integration tests per endpoint
+├── Dockerfile                # image to run the app itself as a container
 ├── pyproject.toml           # dependencies and tool configuration
 └── uv.lock                  # locked dependency versions
 ```

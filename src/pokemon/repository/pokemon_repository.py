@@ -2,7 +2,7 @@
 
 from typing import Final
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from pokemon.entity import Pokemon
@@ -65,3 +65,45 @@ class PokemonRepository:
         :param session: Session of SQLAlchemy
         """
         session.add(pokemon)
+
+    def find(
+        self,
+        session: Session,
+        *,
+        name: str | None,
+        type_: str | None,
+        legendary: bool | None,
+        page: int,
+        size: int,
+    ) -> tuple[list[Pokemon], int]:
+        """Search Pokémon. Return one page and the total number of matches.
+
+        :param session: Session of SQLAlchemy
+        :param name: Part of the name, case-insensitive, or None for no filter
+        :param type_: Matches `type_1` or `type_2`, or None for no filter
+        :param legendary: Filter by the legendary flag, or None for no filter
+        :param page: Page number, starting at 0
+        :param size: Number of Pokémon per page
+        :return: The Pokémon of the page and the total number of matches
+        """
+        conditions = []
+        if name is not None:
+            # autoescape: a "%" or "_" typed by the user is not a wildcard
+            conditions.append(Pokemon.name.icontains(name, autoescape=True))
+        if type_ is not None:
+            conditions.append(or_(Pokemon.type_1 == type_, Pokemon.type_2 == type_))
+        if legendary is not None:
+            conditions.append(Pokemon.legendary == legendary)
+
+        total = session.scalar(
+            select(func.count()).select_from(Pokemon).where(*conditions)
+        )
+        statement = (
+            select(Pokemon)
+            .where(*conditions)
+            .options(joinedload(Pokemon.detail), selectinload(Pokemon.moves))
+            .order_by(Pokemon.id)
+            .limit(size)
+            .offset(page * size)
+        )
+        return list(session.scalars(statement).all()), total or 0

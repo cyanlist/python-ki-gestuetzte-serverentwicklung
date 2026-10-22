@@ -2,6 +2,7 @@
 
 from typing import Final
 
+from pokemon.model.pokemon_query_model import PokemonQueryModel
 from pokemon.repository.pokemon_repository import PokemonRepository
 from pokemon.repository.session_factory import SessionFactory
 from pokemon.service.exceptions import NotFoundError
@@ -31,3 +32,20 @@ class PokemonService:
                 raise NotFoundError(pokemon_id)
             # The DTO is created inside the block, while the session is still open
             return PokemonDTO.from_pokemon(pokemon)
+
+    def find(self, query: PokemonQueryModel) -> tuple[list[PokemonDTO], int]:
+        """Search Pokémon. Return one page and the total number of matches.
+
+        :param query: Validated query parameters
+        :return: The DTOs of the page and the total number of matches
+        """
+        with SessionFactory() as session:
+            pokemon_list, total = self.repo.find(
+                session,
+                name=query.name,
+                type_=query.type.value if query.type is not None else None,
+                legendary=query.legendary,
+                page=query.page,
+                size=query.size,
+            )
+            return [PokemonDTO.from_pokemon(p) for p in pokemon_list], total

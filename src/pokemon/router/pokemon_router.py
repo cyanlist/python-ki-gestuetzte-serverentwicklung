@@ -2,8 +2,11 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Header, Response, status
+from fastapi import APIRouter, Depends, Header, Query, Response, status
 
+from pokemon.model.page_info_model import PageInfoModel
+from pokemon.model.pokemon_page_model import PokemonPageModel
+from pokemon.model.pokemon_query_model import PokemonQueryModel
 from pokemon.model.pokemon_response_model import PokemonResponseModel
 from pokemon.router.constants import ETAG
 from pokemon.router.dependencies import get_service
@@ -12,6 +15,29 @@ from pokemon.service.pokemon_service import PokemonService
 __all__ = ["router"]
 
 router = APIRouter(prefix="/pokemon", tags=["Read"])
+
+
+@router.get("", response_model=PokemonPageModel)
+def get(
+    query: Annotated[PokemonQueryModel, Query()],
+    service: Annotated[PokemonService, Depends(get_service)],
+) -> PokemonPageModel:
+    """Search Pokémon with query parameters, e.g. `?type=Fire&page=0&size=5`.
+
+    :param query: Validated query parameters
+    :param service: Injected service with the business logic
+    :return: One page of matching Pokémon
+    """
+    pokemon_list, total = service.find(query)
+    return PokemonPageModel(
+        content=[PokemonResponseModel.from_dto(p) for p in pokemon_list],
+        page=PageInfoModel(
+            size=query.size,
+            number=query.page,
+            total_elements=total,
+            total_pages=-(-total // query.size),  # ceiling division
+        ),
+    )
 
 
 def _etag(version: int) -> str:

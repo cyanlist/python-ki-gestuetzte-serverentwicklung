@@ -43,3 +43,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "N"]
 # Include files for ty checks
 [tool.ty.src]
 include = ["src", "tests"]
+
+# Integration tests need the database container (see README)
+[tool.pytest.ini_options]
+testpaths = ["tests"]

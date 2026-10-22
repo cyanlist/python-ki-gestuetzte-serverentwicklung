@@ -2,7 +2,7 @@
 
 from typing import Final
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from pokemon.entity import Pokemon
@@ -27,3 +27,41 @@ class PokemonRepository:
             .where(Pokemon.id == pokemon_id)
         )
         return session.scalar(statement)
+
+    def exists_by_id(self, pokemon_id: int, session: Session) -> bool:
+        """Check whether a Pokémon with this number exists.
+
+        :param pokemon_id: Pokédex number to check
+        :param session: Session of SQLAlchemy
+        :return: True, if a Pokémon with this number exists
+        """
+        statement: Final = (
+            select(func.count()).select_from(Pokemon).where(Pokemon.id == pokemon_id)
+        )
+        return bool(session.scalar(statement))
+
+    def exists_by_name(
+        self, name: str, session: Session, *, exclude_id: int | None = None
+    ) -> bool:
+        """Check whether a Pokémon with this name exists.
+
+        :param name: Name to check
+        :param session: Session of SQLAlchemy
+        :param exclude_id: Pokédex number to ignore. Needed for PUT, where a Pokémon
+            may keep its own name.
+        :return: True, if a Pokémon with this name exists
+        """
+        statement = (
+            select(func.count()).select_from(Pokemon).where(Pokemon.name == name)
+        )
+        if exclude_id is not None:
+            statement = statement.where(Pokemon.id != exclude_id)
+        return bool(session.scalar(statement))
+
+    def add(self, pokemon: Pokemon, session: Session) -> None:
+        """Mark a new Pokémon (with its detail and moves) for INSERT.
+
+        :param pokemon: New Pokémon to insert
+        :param session: Session of SQLAlchemy
+        """
+        session.add(pokemon)

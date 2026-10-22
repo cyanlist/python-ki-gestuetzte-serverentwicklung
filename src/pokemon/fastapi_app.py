@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from pokemon.health_router import router as health_router
+from pokemon.router.health_router import router as health_router
 
 
 @asynccontextmanager

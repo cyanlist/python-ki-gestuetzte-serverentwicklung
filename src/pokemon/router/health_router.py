@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Request, Response, status
 
-from pokemon.health_status_model import HealthStatusModel
+from pokemon.model.health_status_model import HealthStatusModel
 
 router = APIRouter(prefix="/health", tags=["Health"])
 
